@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РУЛЕТКА ОТГОВОРОК</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        
+        :root {
+            --item-height: 64px;
+        }
+        
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: #0f0f11;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        main {
+            flex: 1 0 auto;
+        }
+        
+        footer {
+            flex-shrink: 0;
+        }
+
+        .title {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .reel {
+            height: 384px;
+            background: linear-gradient(180deg, #18181b 0%, #27272a 100%);
+            border: 6px solid #3b82f6;
+            box-shadow: 0 0 60px -15px rgb(59 130 246 / 0.6),
+                        inset 0 0 40px rgba(255,255,255,0.05);
+        }
+
+        .reel-inner {
+            transition: transform 5360ms cubic-bezier(0.22, 0.07, 0.10, 0.99);
+            will-change: transform;
+        }
+
+        .phrase {
+            height: var(--item-height);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.35rem;
+            line-height: 1.3;
+            font-weight: 600;
+            color: #e4e4e7;
+            text-align: center;
+            padding: 0 24px;
+            border-bottom: 1px solid rgba(63, 63, 70, 0.4);
+        }
+
+        .reel::before,
+        .reel::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0;
+            height: 80px;
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        .reel::before { top: 0; background: linear-gradient(to bottom, #18181b, transparent); }
+        .reel::after  { bottom: 0; background: linear-gradient(to top, #18181b, transparent); }
+
+        .highlight {
+            position: absolute;
+            left: 12px; right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 72px;
+            border: 3px solid #22d3ee;
+            border-radius: 16px;
+            box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.15), 0 0 40px rgba(34, 211, 238, 0.6);
+            z-index: 20;
+            pointer-events: none;
+            background: rgba(34, 211, 238, 0.08);
+        }
+
+        .glow-btn {
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .glow-btn:hover {
+            box-shadow: 0 0 50px -10px rgb(165 243 252);
+            transform: translateY(-3px) scale(1.03);
+        }
+    </style>
+</head>
+<body>
+
+    <main class="max-w-lg w-full mx-auto px-6 py-12">
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-3 mb-4">
+                <div class="w-3 h-3 bg-cyan-400 rounded-full animate-pulse"></div>
+                <span class="text-cyan-400 text-sm font-medium tracking-[4px] uppercase">уродливый свитер</span>
+            </div>
+            <h1 class="title text-6xl font-bold tracking-tighter bg-gradient-to-br from-white via-cyan-200 to-violet-300 bg-clip-text text-transparent">
+                КРУТИ ПЕДАЛИ<br>ДОЛБОЕБ
+            </h1>
+            <p class="mt-3 text-zinc-400 text-lg">ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ ОТМАЗОК, ФАКУЛЬТЕТ ИЗВОРОТЛИВОСТИ, КАФЕДРА ИНТЕНСИВНОГО ПОХУЗИМА ПРИ ПОДДЕРЖКЕ МИНИСТЕРСТВА ОТГОВОРОК им. xddReTro</p>
+        </div>
+
+        <div class="relative mb-10">
+            <div id="reel" class="reel mx-auto rounded-3xl overflow-hidden relative">
+                <div id="reel-inner" class="reel-inner"></div>
+                <div class="highlight"></div>
+            </div>
+        </div>
+
+        <div class="flex justify-center">
+            <button id="spinBtn"
+                    class="glow-btn px-16 py-7 bg-gradient-to-r from-cyan-500 to-violet-600 text-3xl font-bold rounded-3xl shadow-xl flex items-center gap-4 hover:brightness-110">
+                <span>ПУСК</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m-7-7v14" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="result" class="hidden mt-12 text-center">
+            <div class="text-cyan-400 text-sm font-medium tracking-widest mb-2">ВЫПАЛО</div>
+            <div id="winnerText"
+                 class="text-3xl leading-tight font-semibold bg-zinc-900 border border-zinc-700 rounded-2xl px-8 py-6 min-h-[140px] flex items-center justify-center shadow-inner">
+            </div>
+           
+            <div class="flex gap-4 justify-center mt-8">
+                <button onclick="copyToClipboard()"
+                        class="flex-1 py-4 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-lg font-medium transition-colors flex items-center justify-center gap-2">
+                    📋 Скопировать
+                </button>
+                <button onclick="spinAgain()"
+                        class="flex-1 py-4 bg-gradient-to-r from-cyan-500 to-violet-600 hover:brightness-110 rounded-2xl text-lg font-medium transition-all">
+                    КРУТИТЬ ЕЩЁ
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="text-center py-6 text-zinc-600 text-sm border-t border-zinc-800 mt-auto">
+        ACCE VIBECODES INC. 2026 — ALL RIGHTS RESERVED
+    </footer>
+
+    <audio id="startSound" preload="auto">
+        <source src="1.mp3" type="audio/mpeg">
+    </audio>
+
+    <audio id="endSound" preload="auto">
+        <source src="2.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        const excuses = [
+            "бля лень","нет вайба","спать пиздец хочется","настроение в очке",
+            "впадлу настраивать","интернет говно сегодня","микрофон без паука",
+            "башка трещит","не сегодня","клоунсквад мешает таймингами",
+            "чат пустой будет","учеба душит баля","точно завтра в 3",
+            "депрессия в 0 лет","нет света","OBS вылетает","душность бытия",
+            "лень даже OBS открывать","хочу сладкий подарок","щас начну — сразу спать захочу",
+            "го в срарк","не тянет","ты воняешь ты воняешь","пантограф дрочу",
+            "бесите","завтра на учебу","давайте потом",
+            "чат токсичный будет","просто не хочу","хочу какать","щас лягу и вырублюсь",
+            "хочу хотлапить с гун гуннет","щас клоун запустит, смысл?","дрочусь в иксе",
+            "жду монитор","впадлу бро","без пива не хочется кастить, а пива не хочется",
+            "пох, никто не ждёт","сразу расхотелось","лень пиздец",
+            "играю, сори","щас лучше не надо","смерть в нищите",
+            "сегодня день-пердень","просто не судьба сегодня"
+        ];
+
+        const ITEM_HEIGHT = 64;
+        const NUM_COPIES = 12;
+        let isSpinning = false;
+
+        function createReel() {
+            const reelInner = document.getElementById('reel-inner');
+            reelInner.innerHTML = '';
+            let longList = [];
+            for (let i = 0; i < NUM_COPIES; i++) longList = longList.concat(excuses);
+            longList.forEach(text => {
+                const div = document.createElement('div');
+                div.className = 'phrase';
+                div.textContent = text;
+                reelInner.appendChild(div);
+            });
+        }
+
+        function spin() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            const spinBtn = document.getElementById('spinBtn');
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.add('hidden');
+            spinBtn.disabled = true;
+            spinBtn.innerHTML = `<span class="animate-pulse">КРУТИТСЯ...</span>`;
+
+            document.getElementById('startSound').currentTime = 0;
+            document.getElementById('startSound').play().catch(() => {});
+
+            const winnerIndex = Math.floor(Math.random() * excuses.length);
+            const winner = excuses[winnerIndex];
+
+            const fullSpins = 7 + Math.floor(Math.random() * 5);
+            const targetIndex = fullSpins * excuses.length + winnerIndex;
+
+            const reel = document.getElementById('reel');
+            const reelHeight = reel.clientHeight;
+            const centerOffset = (reelHeight / 2) - (ITEM_HEIGHT / 2);
+            const distance = (targetIndex * ITEM_HEIGHT) - centerOffset;
+
+            const reelInner = document.getElementById('reel-inner');
+            reelInner.style.transition = 'none';
+            reelInner.style.transform = 'translateY(0px)';
+            void reelInner.offsetWidth;
+
+            reelInner.style.transition = 'transform 5360ms cubic-bezier(0.22, 0.07, 0.10, 0.99)';
+            reelInner.style.transform = `translateY(-${distance}px)`;
+
+            setTimeout(() => {
+                isSpinning = false;
+                spinBtn.disabled = false;
+                spinBtn.innerHTML = `<span>ПУСК</span><svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m-7-7v14"/></svg>`;
+
+                document.getElementById('winnerText').innerHTML = `<span class="text-cyan-300">“</span>${winner}<span class="text-cyan-300">”</span>`;
+                resultDiv.classList.remove('hidden');
+                resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                document.getElementById('endSound').currentTime = 0;
+                document.getElementById('endSound').play().catch(() => {});
+            }, 5360);
+        }
+
+        function copyToClipboard() {
+            const text = document.getElementById('winnerText').textContent.trim();
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const orig = btn.textContent;
+                btn.textContent = '✅ Скопировано!';
+                setTimeout(() => btn.textContent = orig, 1800);
+            });
+        }
+
+        function spinAgain() {
+            document.getElementById('result').classList.add('hidden');
+            setTimeout(spin, 120);
+        }
+
+        window.onload = () => {
+            createReel();
+            document.getElementById('spinBtn').addEventListener('click', spin);
+        };
+    </script>
+</body>
+</html>
+</html>
