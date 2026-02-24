@@ -7,37 +7,20 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-        
-        :root {
-            --item-height: 64px;
-        }
-        
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
-        
+      
+        :root { --item-height: 64px; }
+      
+        html, body { height: 100%; margin: 0; }
+      
         body {
             font-family: 'Inter', system-ui, sans-serif;
-            background: #0f0f11;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            background: #0f0f11; color: white;
+            display: flex; flex-direction: column; min-height: 100vh;
         }
-        
-        main {
-            flex: 1 0 auto;
-        }
-        
-        footer {
-            flex-shrink: 0;
-        }
-
-        .title {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
+      
+        main { flex: 1 0 auto; }
+        footer { flex-shrink: 0; }
+        .title { font-family: 'Space Grotesk', sans-serif; }
         .reel {
             height: 384px;
             background: linear-gradient(180deg, #18181b 0%, #27272a 100%);
@@ -45,60 +28,44 @@
             box-shadow: 0 0 60px -15px rgb(59 130 246 / 0.6),
                         inset 0 0 40px rgba(255,255,255,0.05);
         }
-
         .reel-inner {
             transition: transform 5360ms cubic-bezier(0.22, 0.07, 0.10, 0.99);
             will-change: transform;
         }
-
         .phrase {
             height: var(--item-height);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.35rem;
-            line-height: 1.3;
-            font-weight: 600;
-            color: #e4e4e7;
-            text-align: center;
-            padding: 0 24px;
-            border-bottom: 1px solid rgba(63, 63, 70, 0.4);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.35rem; line-height: 1.3; font-weight: 600;
+            text-align: center; padding: 0 24px;
+            border-bottom: 1px solid rgba(63,63,70,0.4);
         }
-
-        .reel::before,
-        .reel::after {
-            content: '';
-            position: absolute;
-            left: 0; right: 0;
-            height: 80px;
-            z-index: 10;
-            pointer-events: none;
+        .rarity-common  { color: #e4e4e7; }
+        .rarity-rare    { color: #60a5fa; text-shadow: 0 0 10px #60a5fa80; }
+        .rarity-epic    { color: #c084fc; text-shadow: 0 0 12px #c084fc90; }
+        .rarity-legend  { color: #fbbf24; text-shadow: 0 0 16px #fbbf2490; font-weight: 700; }
+        .rarity-mythic  { color: #ef4444; text-shadow: 0 0 20px #ef4444a0; font-weight: 800; letter-spacing: 0.5px; }
+        .reel::before, .reel::after {
+            content: ''; position: absolute; left: 0; right: 0; height: 80px;
+            z-index: 10; pointer-events: none;
         }
-        
         .reel::before { top: 0; background: linear-gradient(to bottom, #18181b, transparent); }
         .reel::after  { bottom: 0; background: linear-gradient(to top, #18181b, transparent); }
-
         .highlight {
-            position: absolute;
-            left: 12px; right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            height: 72px;
-            border: 3px solid #22d3ee;
-            border-radius: 16px;
-            box-shadow: 0 0 0 6px rgba(34, 211, 238, 0.15), 0 0 40px rgba(34, 211, 238, 0.6);
-            z-index: 20;
-            pointer-events: none;
-            background: rgba(34, 211, 238, 0.08);
+            position: absolute; left: 12px; right: 12px; top: 50%; transform: translateY(-50%);
+            height: 72px; border: 3px solid #22d3ee; border-radius: 16px;
+            box-shadow: 0 0 0 6px rgba(34,211,238,0.15), 0 0 40px rgba(34,211,238,0.6);
+            z-index: 20; pointer-events: none; background: rgba(34,211,238,0.08);
         }
-
-        .glow-btn {
-            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        .glow-btn { transition: all 0.3s cubic-bezier(0.23,1,0.32,1); }
+        .glow-btn:hover { box-shadow: 0 0 50px -10px rgb(165 243 252); transform: translateY(-3px) scale(1.03); }
+        .modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+            display: none; align-items: center; justify-content: center; z-index: 50;
         }
-        
-        .glow-btn:hover {
-            box-shadow: 0 0 50px -10px rgb(165 243 252);
-            transform: translateY(-3px) scale(1.03);
+        .modal-content {
+            background: #18181b; border: 2px solid #22d3ee; border-radius: 20px;
+            width: 100%; max-width: 480px; max-height: 85vh; overflow: hidden;
+            display: flex; flex-direction: column;
         }
     </style>
 </head>
@@ -123,31 +90,23 @@
             </div>
         </div>
 
-        <div class="flex justify-center">
-            <button id="spinBtn"
-                    class="glow-btn px-16 py-7 bg-gradient-to-r from-cyan-500 to-violet-600 text-3xl font-bold rounded-3xl shadow-xl flex items-center gap-4 hover:brightness-110">
+        <div class="flex justify-center gap-4">
+            <button id="spinBtn" class="glow-btn px-16 py-7 bg-gradient-to-r from-cyan-500 to-violet-600 text-3xl font-bold rounded-3xl shadow-xl flex items-center gap-4 hover:brightness-110">
                 <span>ПЕДАЛЬ</span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m-7-7v14" />
                 </svg>
             </button>
+            <button onclick="showModal()" class="px-8 py-7 bg-zinc-800 hover:bg-zinc-700 rounded-3xl text-2xl font-medium transition-colors">📊</button>
         </div>
 
         <div id="result" class="hidden mt-12 text-center">
             <div class="text-cyan-400 text-sm font-medium tracking-widest mb-2">ВЫПАЛО</div>
-            <div id="winnerText"
-                 class="text-3xl leading-tight font-semibold bg-zinc-900 border border-zinc-700 rounded-2xl px-8 py-6 min-h-[140px] flex items-center justify-center shadow-inner">
-            </div>
+            <div id="winnerText" class="text-3xl leading-tight font-semibold bg-zinc-900 border border-zinc-700 rounded-2xl px-8 py-6 min-h-[140px] flex items-center justify-center shadow-inner"></div>
            
             <div class="flex gap-4 justify-center mt-8">
-                <button onclick="copyToClipboard()"
-                        class="flex-1 py-4 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-lg font-medium transition-colors flex items-center justify-center gap-2">
-                    📋 Скопировать
-                </button>
-                <button onclick="spinAgain()"
-                        class="flex-1 py-4 bg-gradient-to-r from-cyan-500 to-violet-600 hover:brightness-110 rounded-2xl text-lg font-medium transition-all">
-                    КРУТИТЬ ЕЩЁ
-                </button>
+                <button onclick="copyToClipboard()" class="flex-1 py-4 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-lg font-medium transition-colors flex items-center justify-center gap-2">📋 Скопировать</button>
+                <button onclick="spinAgain()" class="flex-1 py-4 bg-gradient-to-r from-cyan-500 to-violet-600 hover:brightness-110 rounded-2xl text-lg font-medium transition-all">КРУТИТЬ ЕЩЁ</button>
             </div>
         </div>
     </main>
@@ -156,103 +115,211 @@
         ACCE VIBECODES INC. 2026 — ALL RIGHTS RESERVED
     </footer>
 
-    <audio id="startSound" preload="auto">
-        <source src="1.mp3" type="audio/mpeg">
-    </audio>
+    <!-- Модальное окно статистики -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="p-6 border-b border-zinc-700 flex items-center justify-between">
+                <div class="text-2xl font-bold text-cyan-400">ДРОЧИЛА СТАТИСТИКА</div>
+                <button onclick="hideModal()" class="text-3xl leading-none text-zinc-400 hover:text-white">×</button>
+            </div>
+            <div class="p-6 flex-1 overflow-y-auto" id="statsContent"></div>
+            <div class="p-6 border-t border-zinc-700 flex gap-3">
+                <button onclick="resetStats()" class="flex-1 py-4 bg-red-600 hover:bg-red-700 rounded-2xl text-lg font-medium transition-colors">СБРОСИТЬ ВСЁ</button>
+                <button onclick="hideModal()" class="flex-1 py-4 bg-zinc-700 hover:bg-zinc-600 rounded-2xl text-lg font-medium transition-colors">ЗАКРЫТЬ</button>
+            </div>
+        </div>
+    </div>
 
-    <audio id="endSound" preload="auto">
-        <source src="2.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="startSound" preload="auto"><source src="1.mp3" type="audio/mpeg"></audio>
+    <audio id="endSound" preload="auto"><source src="2.mp3" type="audio/mpeg"></audio>
 
     <script>
         const excuses = [
-            "бля лень","нет вайба","спать пиздец хочется","настроение в очке",
-            "впадлу настраивать","интернет говно сегодня","микрофон без паука",
-            "башка трещит","не сегодня","клоунсквад мешает таймингами",
-            "чат пустой будет","учеба душит баля","точно завтра в 3",
-            "депрессия в 0 лет","нет света","OBS вылетает","душность бытия",
-            "лень даже OBS открывать","хочу сладкий подарок","щас начну — сразу спать захочу",
-            "го в срарк","не тянет","ты воняешь ты воняешь","пантограф дрочу",
-            "бесите","завтра на учебу","давайте потом",
-            "чат токсичный будет","просто не хочу","хочу какать","щас лягу и вырублюсь",
-            "хочу хотлапить с гун гуннет","щас клоун запустит, смысл?","дрочусь в иксе",
-            "жду монитор","впадлу бро","без пива не хочется кастить, а пива не хочется",
-            "пох, никто не ждёт","сразу расхотелось","лень пиздец",
-            "играю, сори","щас лучше не надо","смерть в нищите",
-            "сегодня день-пердень","просто не судьба сегодня", "я дрочила просто"
+            {text: "бля лень", rarity: "common"},
+            {text: "нет вайба", rarity: "common"},
+            {text: "спать пиздец хочется", rarity: "common"},
+            {text: "настроение в очке", rarity: "common"},
+            {text: "впадлу настраивать", rarity: "common"},
+            {text: "интернет говно сегодня", rarity: "legend"},
+            {text: "микрофон без паука", rarity: "rare"},
+            {text: "башка трещит", rarity: "rare"},
+            {text: "не сегодня", rarity: "legend"},
+            {text: "клоунсквад мешает таймингами", rarity: "mythic"},
+            {text: "чат пустой будет", rarity: "common"},
+            {text: "учеба душит баля", rarity: "common"},
+            {text: "точно завтра в 3", rarity: "common"},
+            {text: "депрессия в 0 лет", rarity: "legend"},
+            {text: "нет света", rarity: "legend"},
+            {text: "OBS вылетает", rarity: "common"},
+            {text: "душность бытия", rarity: "common"},
+            {text: "лень даже OBS открывать", rarity: "common"},
+            {text: "хочу сладкий подарок", rarity: "rare"},
+            {text: "щас начну — сразу спать захочу", rarity: "common"},
+            {text: "го в срарк", rarity: "rare"},
+            {text: "не тянет", rarity: "common"},
+            {text: "ты воняешь ты воняешь", rarity: "mythic"},
+            {text: "пантограф дрочу", rarity: "mythic"},
+            {text: "бесите", rarity: "common"},
+            {text: "завтра на учебу", rarity: "mythic"},
+            {text: "давайте потом", rarity: "legend"},
+            {text: "чат токсичный будет", rarity: "common"},
+            {text: "просто не хочу", rarity: "common"},
+            {text: "хочу какать", rarity: "legend"},
+            {text: "щас лягу и вырублюсь", rarity: "common"},
+            {text: "хочу хотлапить с гун гуннет", rarity: "mythic"},
+            {text: "щас клоун запустит, смысл?", rarity: "rare"},
+            {text: "дрочусь в иксе", rarity: "epic"},
+            {text: "жду монитор", rarity: "epic"},
+            {text: "впадлу бро", rarity: "common"},
+            {text: "без пива не хочется кастить, а пива не хочется", rarity: "common"},
+            {text: "пох, никто не ждёт", rarity: "epic"},
+            {text: "сразу расхотелось", rarity: "epic"},
+            {text: "лень пиздец", rarity: "common"},
+            {text: "играю, сори", rarity: "epic"},
+            {text: "щас лучше не надо", rarity: "common"},
+            {text: "смерть в нищите", rarity: "legend"},
+            {text: "сегодня день-пердень", rarity: "epic"},
+            {text: "просто не судьба сегодня", rarity: "common"},
+            {text: "я дрочила просто", rarity: "mythic"},
+            {text: "видеокарту разгоняю", rarity: "legend"}
         ];
+
+        const RARITY_WEIGHTS = { common: 55, rare: 25, epic: 12, legend: 6, mythic: 2 };
+        const RARITY_ORDER = ["mythic", "legend", "epic", "rare", "common"];
+        const RARITY_CLASSES = {
+            common: "rarity-common",
+            rare: "rarity-rare",
+            epic: "rarity-epic",
+            legend: "rarity-legend",
+            mythic: "rarity-mythic"
+        };
 
         const ITEM_HEIGHT = 64;
         const NUM_COPIES = 12;
         let isSpinning = false;
+        let stats = JSON.parse(localStorage.getItem("retroStats") || "{}");
 
         function createReel() {
             const reelInner = document.getElementById('reel-inner');
             reelInner.innerHTML = '';
             let longList = [];
             for (let i = 0; i < NUM_COPIES; i++) longList = longList.concat(excuses);
-            longList.forEach(text => {
+            longList.forEach(item => {
                 const div = document.createElement('div');
-                div.className = 'phrase';
-                div.textContent = text;
+                div.className = `phrase ${RARITY_CLASSES[item.rarity]}`;
+                div.textContent = item.text;
                 reelInner.appendChild(div);
+            });
+        }
+
+        function getWeightedRandom() {
+            let total = 0;
+            excuses.forEach(e => total += RARITY_WEIGHTS[e.rarity]);
+            let r = Math.random() * total;
+            let sum = 0;
+            for (let item of excuses) {
+                sum += RARITY_WEIGHTS[item.rarity];
+                if (r <= sum) return item;
+            }
+            return excuses[0]; // fallback
+        }
+
+        function updateStatsDisplay(container) {
+            container.innerHTML = '';
+            if (Object.keys(stats).length === 0) {
+                container.innerHTML = '<div class="text-zinc-500 text-center py-8">Пока никто не дрочил</div>';
+                return;
+            }
+            const grouped = { mythic:[], legend:[], epic:[], rare:[], common:[] };
+            Object.keys(stats).forEach(key => {
+                const item = excuses.find(e => e.text === key);
+                if (item) grouped[item.rarity].push({text:key, count:stats[key], rarity:item.rarity});
+            });
+            RARITY_ORDER.forEach(r => {
+                if (grouped[r].length) {
+                    grouped[r].sort((a,b) => b.count - a.count);
+                    grouped[r].forEach(item => {
+                        const div = document.createElement('div');
+                        div.className = 'flex justify-between py-3 border-b border-zinc-700 last:border-none';
+                        div.innerHTML = `
+                            <span class="${RARITY_CLASSES[item.rarity]}">${item.text}</span>
+                            <span class="font-mono text-zinc-300">${item.count}×</span>
+                        `;
+                        container.appendChild(div);
+                    });
+                }
             });
         }
 
         function spin() {
             if (isSpinning) return;
             isSpinning = true;
-
             const spinBtn = document.getElementById('spinBtn');
             const resultDiv = document.getElementById('result');
             resultDiv.classList.add('hidden');
             spinBtn.disabled = true;
             spinBtn.innerHTML = `<span class="animate-pulse">КРУТИТСЯ...</span>`;
-
             document.getElementById('startSound').currentTime = 0;
             document.getElementById('startSound').play().catch(() => {});
-
-            const winnerIndex = Math.floor(Math.random() * excuses.length);
-            const winner = excuses[winnerIndex];
-
+            const winner = getWeightedRandom();
+            const winnerIndex = excuses.findIndex(item => item.text === winner.text);
             const fullSpins = 7 + Math.floor(Math.random() * 5);
             const targetIndex = fullSpins * excuses.length + winnerIndex;
-
-            const reel = document.getElementById('reel');
-            const reelHeight = reel.clientHeight;
+            const reelHeight = document.getElementById('reel').clientHeight;
             const centerOffset = (reelHeight / 2) - (ITEM_HEIGHT / 2);
             const distance = (targetIndex * ITEM_HEIGHT) - centerOffset;
-
             const reelInner = document.getElementById('reel-inner');
             reelInner.style.transition = 'none';
             reelInner.style.transform = 'translateY(0px)';
             void reelInner.offsetWidth;
-
             reelInner.style.transition = 'transform 5360ms cubic-bezier(0.22, 0.07, 0.10, 0.99)';
             reelInner.style.transform = `translateY(-${distance}px)`;
-
             setTimeout(() => {
                 isSpinning = false;
                 spinBtn.disabled = false;
                 spinBtn.innerHTML = `<span>ПЕДАЛЬ</span><svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m-7-7v14"/></svg>`;
-
-                document.getElementById('winnerText').innerHTML = `<span class="text-cyan-300">“</span>${winner}<span class="text-cyan-300">”</span>`;
+                const winnerEl = document.getElementById('winnerText');
+                winnerEl.innerHTML = `<span class="text-cyan-300">“</span>${winner.text}<span class="text-cyan-300">”</span>`;
+                winnerEl.className = `text-3xl leading-tight font-semibold bg-zinc-900 border border-zinc-700 rounded-2xl px-8 py-6 min-h-[140px] flex items-center justify-center shadow-inner ${RARITY_CLASSES[winner.rarity]}`;
+                const key = winner.text;
+                stats[key] = (stats[key] || 0) + 1;
+                localStorage.setItem("retroStats", JSON.stringify(stats));
                 resultDiv.classList.remove('hidden');
                 resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
                 document.getElementById('endSound').currentTime = 0;
                 document.getElementById('endSound').play().catch(() => {});
             }, 5360);
         }
 
+        function showModal() {
+            const modal = document.getElementById('modal');
+            const content = document.getElementById('statsContent');
+            updateStatsDisplay(content);
+            modal.style.display = 'flex';
+        }
+
+        function hideModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function resetStats() {
+            if (confirm('Сбросить всю статистику?')) {
+                localStorage.removeItem("retroStats");
+                stats = {};
+                updateStatsDisplay(document.getElementById('statsContent'));
+            }
+        }
+
         function copyToClipboard() {
-            const text = document.getElementById('winnerText').textContent.trim();
+            const text = document.getElementById('winnerText').textContent.trim().replace(/[“”]/g, '');
             navigator.clipboard.writeText(text).then(() => {
-                const btn = event.target;
-                const orig = btn.textContent;
-                btn.textContent = '✅ Скопировано!';
-                setTimeout(() => btn.textContent = orig, 1800);
-            });
+                const btn = document.querySelector('#result button:nth-child(1)');
+                if (btn) {
+                    const orig = btn.innerHTML;
+                    btn.innerHTML = '✅ Скопировано';
+                    setTimeout(() => btn.innerHTML = orig, 1800);
+                }
+            }).catch(() => {});
         }
 
         function spinAgain() {
@@ -267,6 +334,3 @@
     </script>
 </body>
 </html>
-
-</html>
-
