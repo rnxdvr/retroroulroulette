@@ -58,15 +58,30 @@
         }
         .glow-btn { transition: all 0.3s cubic-bezier(0.23,1,0.32,1); }
         .glow-btn:hover { box-shadow: 0 0 50px -10px rgb(165 243 252); transform: translateY(-3px) scale(1.03); }
-        .modal {
+        .modal, .paywall {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85);
             display: none; align-items: center; justify-content: center; z-index: 50;
         }
-        .modal-content {
+        .modal-content, .paywall-content {
             background: #18181b; border: 2px solid #22d3ee; border-radius: 20px;
-            width: 100%; max-width: 480px; max-height: 85vh; overflow: hidden;
-            display: flex; flex-direction: column;
+            width: 100%; max-width: 480px; padding: 2rem; text-align: center;
         }
+        .paywall-content h2 { font-size: 2.2rem; margin-bottom: 1.2rem; color: #ef4444; }
+        .paywall-content p { font-size: 1.1rem; margin-bottom: 1.5rem; }
+        .paywall-content .btn-group {
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;
+        }
+        .paywall-content button, .paywall-content a {
+            padding: 0.8rem 1.6rem;
+            border-radius: 10px; font-size: 1.2rem; font-weight: bold; cursor: pointer;
+            min-width: 180px; text-align: center;
+        }
+        .paywall-content a { background: #ef4444; color: white; text-decoration: none; }
+        .paywall-content a:hover { background: #dc2626; }
+        .paywall-content button.bg-green { background: #22c55e; color: white; border: none; }
+        .paywall-content button.bg-green:hover { background: #16a34a; }
+        .paywall-content button.close-btn { background: transparent; color: #9ca3af; font-size: 1rem; margin-top: 1rem; }
+        .paywall-content button.close-btn:hover { color: white; }
     </style>
 </head>
 <body>
@@ -115,7 +130,7 @@
         ACCE VIBECODES INC. 2026 — ALL RIGHTS RESERVED
     </footer>
 
-    <!-- Модальное окно статистики -->
+    <!-- Модалка статистики -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <div class="p-6 border-b border-zinc-700 flex items-center justify-between">
@@ -127,6 +142,26 @@
                 <button onclick="resetStats()" class="flex-1 py-4 bg-red-600 hover:bg-red-700 rounded-2xl text-lg font-medium transition-colors">СБРОСИТЬ ВСЁ</button>
                 <button onclick="hideModal()" class="flex-1 py-4 bg-zinc-700 hover:bg-zinc-600 rounded-2xl text-lg font-medium transition-colors">ЗАКРЫТЬ</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Пейволл -->
+    <div id="paywall" class="paywall">
+        <div class="paywall-content">
+            <h2>ЭЭЭ ЛУДИК ТЫ КУДА ЛЕЗЕШ БРАТ</h2>
+            <p class="text-xl text-zinc-300 mb-6">
+                Первые 5 спинов были бесплатные.<br>
+                Хочешь дальше гэмбла — жертвуй 69₽ и будет анлим на 12 часов
+            </p>
+            <div class="btn-group">
+                <a href="https://www.donationalerts.com/r/quarkeelite" target="_blank">ЖЕРТВОВАТЬ</a>
+                <button class="bg-green" onclick="markAsDonated(); document.getElementById('paywall').style.display='none'; alert('Спасибо, брат! Теперь крути 12-ти часовой анлим 💪');">
+                    Я УЖЕ ЖЕРТВОВАЛ, LEMME IN
+                </button>
+            </div>
+            <button class="close-btn" onclick="document.getElementById('paywall').style.display='none'">
+                × Закрыть (но спин не запустится)
+            </button>
         </div>
     </div>
 
@@ -196,8 +231,64 @@
 
         const ITEM_HEIGHT = 64;
         const NUM_COPIES = 12;
+        const FREE_SPINS = 5;
+        const FREE_PERIOD_MS = 60 * 60 * 1000; // 1 час в миллисекундах
+        const DONATED_KEY = "donatedRetro";
+        const DONATED_EXPIRY = 12 * 60 * 60 * 1000; // 12 часов безлимита после "доната"
+
         let isSpinning = false;
         let stats = JSON.parse(localStorage.getItem("retroStats") || "{}");
+
+        function getFreeSpinsData() {
+            const data = JSON.parse(localStorage.getItem("freeSpinsData") || "{}");
+            return {
+                count: data.count || 0,
+                firstSpinTime: data.firstSpinTime || null
+            };
+        }
+
+        function saveFreeSpinsData(count, firstTime) {
+            localStorage.setItem("freeSpinsData", JSON.stringify({
+                count,
+                firstSpinTime: firstTime
+            }));
+        }
+
+        function canSpinForFree() {
+            const { count, firstSpinTime } = getFreeSpinsData();
+            const now = Date.now();
+            if (firstSpinTime && now - firstSpinTime >= FREE_PERIOD_MS) {
+                saveFreeSpinsData(0, null);
+                return true;
+            }
+            return count < FREE_SPINS;
+        }
+
+        function useFreeSpin() {
+            let { count, firstSpinTime } = getFreeSpinsData();
+            const now = Date.now();
+            if (count === 0) firstSpinTime = now;
+            count++;
+            saveFreeSpinsData(count, firstSpinTime);
+        }
+
+        function isDonated() {
+            const data = JSON.parse(localStorage.getItem(DONATED_KEY) || "{}");
+            if (data.timestamp && Date.now() - data.timestamp < DONATED_EXPIRY) {
+                return true;
+            }
+            return false;
+        }
+
+        function markAsDonated() {
+            localStorage.setItem(DONATED_KEY, JSON.stringify({
+                timestamp: Date.now()
+            }));
+        }
+
+        function showPaywall() {
+            document.getElementById('paywall').style.display = 'flex';
+        }
 
         function createReel() {
             const reelInner = document.getElementById('reel-inner');
@@ -221,7 +312,7 @@
                 sum += RARITY_WEIGHTS[item.rarity];
                 if (r <= sum) return item;
             }
-            return excuses[0]; // fallback
+            return excuses[0];
         }
 
         function updateStatsDisplay(container) {
@@ -253,39 +344,58 @@
 
         function spin() {
             if (isSpinning) return;
+
+            if (!canSpinForFree() && !isDonated()) {
+                showPaywall();
+                return;
+            }
+
+            if (canSpinForFree()) useFreeSpin();
+
             isSpinning = true;
             const spinBtn = document.getElementById('spinBtn');
             const resultDiv = document.getElementById('result');
             resultDiv.classList.add('hidden');
             spinBtn.disabled = true;
             spinBtn.innerHTML = `<span class="animate-pulse">КРУТИТСЯ...</span>`;
+
             document.getElementById('startSound').currentTime = 0;
             document.getElementById('startSound').play().catch(() => {});
+
             const winner = getWeightedRandom();
             const winnerIndex = excuses.findIndex(item => item.text === winner.text);
+
             const fullSpins = 7 + Math.floor(Math.random() * 5);
             const targetIndex = fullSpins * excuses.length + winnerIndex;
+
             const reelHeight = document.getElementById('reel').clientHeight;
             const centerOffset = (reelHeight / 2) - (ITEM_HEIGHT / 2);
             const distance = (targetIndex * ITEM_HEIGHT) - centerOffset;
+
             const reelInner = document.getElementById('reel-inner');
             reelInner.style.transition = 'none';
             reelInner.style.transform = 'translateY(0px)';
             void reelInner.offsetWidth;
+
             reelInner.style.transition = 'transform 5360ms cubic-bezier(0.22, 0.07, 0.10, 0.99)';
             reelInner.style.transform = `translateY(-${distance}px)`;
+
             setTimeout(() => {
                 isSpinning = false;
                 spinBtn.disabled = false;
                 spinBtn.innerHTML = `<span>ПЕДАЛЬ</span><svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m-7-7v14"/></svg>`;
+
                 const winnerEl = document.getElementById('winnerText');
                 winnerEl.innerHTML = `<span class="text-cyan-300">“</span>${winner.text}<span class="text-cyan-300">”</span>`;
                 winnerEl.className = `text-3xl leading-tight font-semibold bg-zinc-900 border border-zinc-700 rounded-2xl px-8 py-6 min-h-[140px] flex items-center justify-center shadow-inner ${RARITY_CLASSES[winner.rarity]}`;
+
                 const key = winner.text;
                 stats[key] = (stats[key] || 0) + 1;
                 localStorage.setItem("retroStats", JSON.stringify(stats));
+
                 resultDiv.classList.remove('hidden');
                 resultDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
                 document.getElementById('endSound').currentTime = 0;
                 document.getElementById('endSound').play().catch(() => {});
             }, 5360);
@@ -325,6 +435,10 @@
         function spinAgain() {
             document.getElementById('result').classList.add('hidden');
             setTimeout(spin, 120);
+        }
+
+        function markAsDonated() {
+            localStorage.setItem("donatedRetro", JSON.stringify({ timestamp: Date.now() }));
         }
 
         window.onload = () => {
