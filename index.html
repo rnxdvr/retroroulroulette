@@ -7,17 +7,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-    
+   
         :root { --item-height: 64px; }
-    
+   
         html, body { height: 100%; margin: 0; }
-    
+   
         body {
             font-family: 'Inter', system-ui, sans-serif;
             background: #0f0f11; color: white;
             display: flex; flex-direction: column; min-height: 100vh;
         }
-    
+   
         main { flex: 1 0 auto; }
         footer { flex-shrink: 0; }
         .title { font-family: 'Space Grotesk', sans-serif; }
@@ -39,17 +39,17 @@
             text-align: center; padding: 0 24px;
             border-bottom: 1px solid rgba(63,63,70,0.4);
         }
-        .rarity-common  { color: #e4e4e7; }
-        .rarity-rare    { color: #60a5fa; text-shadow: 0 0 10px #60a5fa80; }
-        .rarity-epic    { color: #c084fc; text-shadow: 0 0 12px #c084fc90; }
-        .rarity-legend  { color: #fbbf24; text-shadow: 0 0 16px #fbbf2490; font-weight: 700; }
-        .rarity-mythic  { color: #ef4444; text-shadow: 0 0 20px #ef4444a0; font-weight: 800; letter-spacing: 0.5px; }
+        .rarity-common { color: #e4e4e7; }
+        .rarity-rare { color: #60a5fa; text-shadow: 0 0 10px #60a5fa80; }
+        .rarity-epic { color: #c084fc; text-shadow: 0 0 12px #c084fc90; }
+        .rarity-legend { color: #fbbf24; text-shadow: 0 0 16px #fbbf2490; font-weight: 700; }
+        .rarity-mythic { color: #ef4444; text-shadow: 0 0 20px #ef4444a0; font-weight: 800; letter-spacing: 0.5px; }
         .reel::before, .reel::after {
             content: ''; position: absolute; left: 0; right: 0; height: 80px;
             z-index: 10; pointer-events: none;
         }
         .reel::before { top: 0; background: linear-gradient(to bottom, #18181b, transparent); }
-        .reel::after  { bottom: 0; background: linear-gradient(to top, #18181b, transparent); }
+        .reel::after { bottom: 0; background: linear-gradient(to top, #18181b, transparent); }
         .highlight {
             position: absolute; left: 12px; right: 12px; top: 50%; transform: translateY(-50%);
             height: 72px; border: 3px solid #22d3ee; border-radius: 16px;
@@ -58,32 +58,26 @@
         }
         .glow-btn { transition: all 0.3s cubic-bezier(0.23,1,0.32,1); }
         .glow-btn:hover { box-shadow: 0 0 50px -10px rgb(165 243 252); transform: translateY(-3px) scale(1.03); }
-
         .modal, .paywall {
             position: fixed; inset: 0; background: rgba(0,0,0,0.85);
             display: none; align-items: center; justify-content: center; z-index: 50;
         }
-
         .modal-content {
             background: #18181b; border: 2px solid #22d3ee; border-radius: 20px;
             width: 90%; max-width: 500px; height: 85vh; max-height: 85vh;
             display: flex; flex-direction: column; overflow: hidden;
         }
-
         .modal-header {
             padding: 1.5rem; border-bottom: 1px solid #3f3f46;
             display: flex; justify-content: space-between; align-items: center;
         }
-
         .modal-body {
             flex: 1; overflow-y: auto; padding: 1.5rem;
         }
-
         .modal-footer {
             padding: 1.5rem; border-top: 1px solid #3f3f46;
             display: flex; gap: 1rem;
         }
-
         .paywall-content {
             background: #18181b; border: 2px solid #22d3ee; border-radius: 20px;
             width: 90%; max-width: 480px; padding: 2rem; text-align: center;
@@ -104,17 +98,115 @@
         .paywall-content button.bg-green:hover { background: #16a34a; }
         .paywall-content button.close-btn { background: transparent; color: #9ca3af; font-size: 1rem; margin-top: 1rem; }
         .paywall-content button.close-btn:hover { color: white; }
-
         @keyframes pulse-glow {
             0%, 100% { box-shadow: 0 0 20px 5px rgba(245, 158, 11, 0.4); }
-            50%      { box-shadow: 0 0 40px 15px rgba(245, 158, 11, 0.7); }
+            50% { box-shadow: 0 0 40px 15px rgba(245, 158, 11, 0.7); }
         }
         .animate-pulse-glow {
             animation: pulse-glow 2.5s infinite ease-in-out;
         }
+        #mini-player {
+            position: fixed !important;
+            top: 0.5rem !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            background: rgba(30,30,35,0.92);
+            border: 1px solid rgba(59,130,246,0.4);
+            border-radius: 9999px;
+            padding: 0.3rem 1.4rem;
+            backdrop-filter: blur(10px);
+            z-index: 9999 !important;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+            font-size: 0.9rem;
+        }
+        #mini-player button {
+            background: none;
+            border: none;
+            color: #bfdbfe;
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            transition: transform 0.15s, color 0.2s;
+        }
+        #mini-player button:hover {
+            transform: scale(1.2);
+            color: white;
+        }
+        #volume {
+            width: 110px;
+            height: 3px;
+            background: rgba(59,130,246,0.3);
+            border-radius: 9999px;
+            accent-color: #3b82f6;
+            cursor: pointer;
+        }
+        #volume::-webkit-slider-thumb {
+            width: 10px;
+            height: 10px;
+            background: #3b82f6;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+        }
+        #player-hint {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        #player-hint .content {
+            background: #18181b;
+            border: 2px solid #3b82f6;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 90%;
+        }
+        #player-hint h2 {
+            color: #60a5fa;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        #player-hint .btns {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+        #player-hint button {
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #player-hint .yes { background: #22c55e; color: white; }
+        #player-hint .no  { background: #ef4444; color: white; }
     </style>
 </head>
 <body>
+
+    <div id="mini-player" style="display:none;">
+        <button id="playPauseBtn" class="text-xl">▶️</button>
+        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5">
+    </div>
+
+    <div id="player-hint">
+        <div class="content">
+            <h2>включи пачамаму</h2>
+            <p class="text-zinc-300 mb-6">залупленная пачамама будет играть, пока сам не остановишь</p>
+            <div class="btns">
+                <button class="yes" onclick="enablePochamama()">ВКЛЮЧИТЬ 🔥</button>
+                <button class="no" onclick="skipPochamama()">НЕНАДО ПАЧАМАМЫ</button>
+            </div>
+        </div>
+    </div>
 
     <main class="max-w-lg w-full mx-auto px-6 py-12">
         <div class="text-center mb-10">
@@ -127,14 +219,12 @@
             </h1>
             <p class="mt-3 text-zinc-400 text-lg">ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ ОТМАЗОК, ФАКУЛЬТЕТ ИЗВОРОТЛИВОСТИ, КАФЕДРА ИНТЕНСИВНОГО ПОХУИЗМА ПРИ ПОДДЕРЖКЕ МИНИСТЕРСТВА ОТГОВОРОК им. xddReTro</p>
         </div>
-
         <div class="relative mb-10">
             <div id="reel" class="reel mx-auto rounded-3xl overflow-hidden relative">
                 <div id="reel-inner" class="reel-inner"></div>
                 <div class="highlight"></div>
             </div>
         </div>
-
         <div class="flex justify-center gap-4">
             <button id="spinBtn" class="glow-btn px-16 py-7 bg-gradient-to-r from-cyan-500 to-violet-600 text-3xl font-bold rounded-3xl shadow-xl flex items-center gap-4 hover:brightness-110">
                 <span>ПЕДАЛЬ</span>
@@ -144,11 +234,10 @@
             </button>
             <button onclick="showModal()" class="px-8 py-7 bg-zinc-800 hover:bg-zinc-700 rounded-3xl text-2xl font-medium transition-colors">📊</button>
         </div>
-
         <div id="result" class="hidden mt-12 text-center">
             <div class="text-cyan-400 text-sm font-medium tracking-widest mb-2">ВЫПАЛО</div>
             <div id="winnerText" class="text-3xl leading-tight font-semibold bg-zinc-900 border border-zinc-700 rounded-2xl px-8 py-6 min-h-[140px] flex items-center justify-center shadow-inner"></div>
-           
+          
             <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
                 <button onclick="copyToClipboard()" class="flex-1 py-4 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-lg font-medium transition-colors flex items-center justify-center gap-2">
                     📋 Скопировать
@@ -157,20 +246,17 @@
                     КРУТИТЬ ЕЩЁ
                 </button>
             </div>
-
             <a href="https://www.donationalerts.com/r/quarkeelite" target="_blank"
-               class="mt-14 block w-full max-w-xl mx-auto py-5 px-8 bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-400 
-                      text-black font-bold text-2xl rounded-2xl shadow-2xl shadow-amber-500/50 
+               class="mt-14 block w-full max-w-xl mx-auto py-5 px-8 bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-400
+                      text-black font-bold text-2xl rounded-2xl shadow-2xl shadow-amber-500/50
                       hover:shadow-amber-500/80 hover:scale-105 transition-all duration-300 animate-pulse-glow">
                 ПОДДЕРЖАТЬ ВАЙБКОДИНГ 🔥
             </a>
         </div>
     </main>
-
     <footer class="text-center py-6 text-zinc-600 text-sm border-t border-zinc-800 mt-auto">
         ACCE VIBECODES INC. 2026 — ALL RIGHTS RESERVED
     </footer>
-
     <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -184,7 +270,6 @@
             </div>
         </div>
     </div>
-
     <div id="paywall" class="paywall">
         <div class="paywall-content">
             <h2>ЭЭЭ ЛУДИК ТЫ КУДА ЛЕЗЕШ БРАТ</h2>
@@ -203,9 +288,11 @@
             </button>
         </div>
     </div>
-
     <audio id="startSound" preload="auto"><source src="1.mp3" type="audio/mpeg"></audio>
     <audio id="endSound" preload="auto"><source src="2.mp3" type="audio/mpeg"></audio>
+    <audio id="pochamama" loop preload="auto">
+        <source src="pochamama.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
         const excuses = [
@@ -266,7 +353,6 @@
             {text: "один раз живем, много раз срём", rarity: "mythic"},
             {text: "🐗 мужики, не шмаляйте, у меня бланк отвалился 🐗", rarity: "common"}
         ];
-
         const RARITY_WEIGHTS = { common: 55, rare: 25, epic: 12, legend: 6, mythic: 2 };
         const RARITY_ORDER = ["mythic", "legend", "epic", "rare", "common"];
         const RARITY_CLASSES = {
@@ -276,16 +362,50 @@
             legend: "rarity-legend",
             mythic: "rarity-mythic"
         };
-
         const ITEM_HEIGHT = 64;
         const NUM_COPIES = 12;
         const FREE_SPINS = 5;
         const FREE_PERIOD_MS = 60 * 60 * 1000;
         const DONATED_KEY = "donatedRetro";
         const DONATED_EXPIRY = 12 * 60 * 60 * 1000;
-
         let isSpinning = false;
         let stats = JSON.parse(localStorage.getItem("retroStats") || "{}");
+
+        const pochamama = document.getElementById('pochamama');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const volumeSlider = document.getElementById('volume');
+        const miniPlayer = document.getElementById('mini-player');
+        const playerHint = document.getElementById('player-hint');
+
+        pochamama.volume = 0.5;
+        volumeSlider.value = 0.5;
+
+        volumeSlider.addEventListener('input', () => {
+            pochamama.volume = volumeSlider.value;
+        });
+
+        playPauseBtn.addEventListener('click', () => {
+            if (pochamama.paused) {
+                pochamama.play();
+                playPauseBtn.textContent = '⏸️';
+            } else {
+                pochamama.pause();
+                playPauseBtn.textContent = '▶️';
+            }
+        });
+
+        function enablePochamama() {
+            pochamama.play().catch(() => {});
+            playPauseBtn.textContent = '⏸️';
+            miniPlayer.style.display = 'flex';
+            playerHint.style.display = 'none';
+        }
+
+        function skipPochamama() {
+            playerHint.style.display = 'none';
+        }
+
+        playerHint.style.display = 'flex';
 
         function getFreeSpinsData() {
             const data = JSON.parse(localStorage.getItem("freeSpinsData") || "{}");
@@ -294,14 +414,12 @@
                 firstSpinTime: data.firstSpinTime || null
             };
         }
-
         function saveFreeSpinsData(count, firstTime) {
             localStorage.setItem("freeSpinsData", JSON.stringify({
                 count,
                 firstSpinTime: firstTime
             }));
         }
-
         function canSpinForFree() {
             const { count, firstSpinTime } = getFreeSpinsData();
             const now = Date.now();
@@ -311,7 +429,6 @@
             }
             return count < FREE_SPINS;
         }
-
         function useFreeSpin() {
             let { count, firstSpinTime } = getFreeSpinsData();
             const now = Date.now();
@@ -319,7 +436,6 @@
             count++;
             saveFreeSpinsData(count, firstSpinTime);
         }
-
         function isDonated() {
             const data = JSON.parse(localStorage.getItem(DONATED_KEY) || "{}");
             if (data.timestamp && Date.now() - data.timestamp < DONATED_EXPIRY) {
@@ -327,17 +443,14 @@
             }
             return false;
         }
-
         function markAsDonated() {
             localStorage.setItem(DONATED_KEY, JSON.stringify({
                 timestamp: Date.now()
             }));
         }
-
         function showPaywall() {
             document.getElementById('paywall').style.display = 'flex';
         }
-
         function createReel() {
             const reelInner = document.getElementById('reel-inner');
             reelInner.innerHTML = '';
@@ -350,7 +463,6 @@
                 reelInner.appendChild(div);
             });
         }
-
         function getWeightedRandom() {
             let total = 0;
             excuses.forEach(e => total += RARITY_WEIGHTS[e.rarity]);
@@ -362,7 +474,6 @@
             }
             return excuses[0];
         }
-
         function updateStatsDisplay(container) {
             container.innerHTML = '';
             if (Object.keys(stats).length === 0) {
@@ -389,7 +500,6 @@
                 }
             });
         }
-
         function spin() {
             if (isSpinning) return;
             if (!canSpinForFree() && !isDonated()) {
@@ -434,18 +544,15 @@
                 document.getElementById('endSound').play().catch(() => {});
             }, 5360);
         }
-
         function showModal() {
             const modal = document.getElementById('modal');
             const content = document.getElementById('statsContent');
             updateStatsDisplay(content);
             modal.style.display = 'flex';
         }
-
         function hideModal() {
             document.getElementById('modal').style.display = 'none';
         }
-
         function resetStats() {
             if (confirm('Сбросить всю статистику?')) {
                 localStorage.removeItem("retroStats");
@@ -453,7 +560,6 @@
                 updateStatsDisplay(document.getElementById('statsContent'));
             }
         }
-
         function copyToClipboard() {
             const text = document.getElementById('winnerText').textContent.trim().replace(/[“”]/g, '');
             navigator.clipboard.writeText(text).then(() => {
@@ -465,16 +571,13 @@
                 }
             }).catch(() => {});
         }
-
         function spinAgain() {
             document.getElementById('result').classList.add('hidden');
             setTimeout(spin, 120);
         }
-
         function markAsDonated() {
             localStorage.setItem("donatedRetro", JSON.stringify({ timestamp: Date.now() }));
         }
-
         window.onload = () => {
             createReel();
             document.getElementById('spinBtn').addEventListener('click', spin);
@@ -482,4 +585,3 @@
     </script>
 </body>
 </html>
-
