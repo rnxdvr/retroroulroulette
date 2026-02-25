@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>РЕТРО ДРОЧИЛА</title>
+    <title>ЛУДКА</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-     
+    
         :root { --item-height: 64px; }
-     
+    
         html, body { height: 100%; margin: 0; }
-     
+    
         body {
             font-family: 'Inter', system-ui, sans-serif;
             background: #0f0f11; color: white;
             display: flex; flex-direction: column; min-height: 100vh;
         }
-     
+    
         main { flex: 1 0 auto; }
         footer { flex-shrink: 0; }
         .title { font-family: 'Space Grotesk', sans-serif; }
@@ -49,7 +49,7 @@
             z-index: 10; pointer-events: none;
         }
         .reel::before { top: 0; background: linear-gradient(to bottom, #18181b, transparent); }
-        .reel::after { bottom: 0; background: linear-gradient(to top, #18181b, transparent); }
+        .reel::after  { bottom: 0; background: linear-gradient(to top, #18181b, transparent); }
         .highlight {
             position: absolute; left: 12px; right: 12px; top: 50%; transform: translateY(-50%);
             height: 72px; border: 3px solid #22d3ee; border-radius: 16px;
@@ -104,6 +104,14 @@
         .paywall-content button.bg-green:hover { background: #16a34a; }
         .paywall-content button.close-btn { background: transparent; color: #9ca3af; font-size: 1rem; margin-top: 1rem; }
         .paywall-content button.close-btn:hover { color: white; }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px 5px rgba(245, 158, 11, 0.4); }
+            50%      { box-shadow: 0 0 40px 15px rgba(245, 158, 11, 0.7); }
+        }
+        .animate-pulse-glow {
+            animation: pulse-glow 2.5s infinite ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -141,10 +149,21 @@
             <div class="text-cyan-400 text-sm font-medium tracking-widest mb-2">ВЫПАЛО</div>
             <div id="winnerText" class="text-3xl leading-tight font-semibold bg-zinc-900 border border-zinc-700 rounded-2xl px-8 py-6 min-h-[140px] flex items-center justify-center shadow-inner"></div>
            
-            <div class="flex gap-4 justify-center mt-8">
-                <button onclick="copyToClipboard()" class="flex-1 py-4 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-lg font-medium transition-colors flex items-center justify-center gap-2">📋 Скопировать</button>
-                <button onclick="spinAgain()" class="flex-1 py-4 bg-gradient-to-r from-cyan-500 to-violet-600 hover:brightness-110 rounded-2xl text-lg font-medium transition-all">КРУТИТЬ ЕЩЁ</button>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                <button onclick="copyToClipboard()" class="flex-1 py-4 bg-zinc-800 hover:bg-zinc-700 rounded-2xl text-lg font-medium transition-colors flex items-center justify-center gap-2">
+                    📋 Скопировать
+                </button>
+                <button onclick="spinAgain()" class="flex-1 py-4 bg-gradient-to-r from-cyan-500 to-violet-600 hover:brightness-110 rounded-2xl text-lg font-medium transition-all">
+                    КРУТИТЬ ЕЩЁ
+                </button>
             </div>
+
+            <a href="https://www.donationalerts.com/r/quarkeelite" target="_blank"
+               class="mt-14 block w-full max-w-xl mx-auto py-5 px-8 bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-400 
+                      text-black font-bold text-2xl rounded-2xl shadow-2xl shadow-amber-500/50 
+                      hover:shadow-amber-500/80 hover:scale-105 transition-all duration-300 animate-pulse-glow">
+                ПОДДЕРЖАТЬ ВАЙБКОДИНГ 🔥
+            </a>
         </div>
     </main>
 
@@ -152,7 +171,6 @@
         ACCE VIBECODES INC. 2026 — ALL RIGHTS RESERVED
     </footer>
 
-    <!-- Модальное окно статистики (теперь скроллится) -->
     <div id="modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -167,7 +185,6 @@
         </div>
     </div>
 
-    <!-- Пейволл -->
     <div id="paywall" class="paywall">
         <div class="paywall-content">
             <h2>ЭЭЭ ЛУДИК ТЫ КУДА ЛЕЗЕШ БРАТ</h2>
@@ -262,9 +279,9 @@
         const ITEM_HEIGHT = 64;
         const NUM_COPIES = 12;
         const FREE_SPINS = 5;
-        const FREE_PERIOD_MS = 60 * 60 * 1000; // 1 час в миллисекундах
+        const FREE_PERIOD_MS = 60 * 60 * 1000;
         const DONATED_KEY = "donatedRetro";
-        const DONATED_EXPIRY = 12 * 60 * 60 * 1000; // 12 часов безлимита после "доната"
+        const DONATED_EXPIRY = 12 * 60 * 60 * 1000;
 
         let isSpinning = false;
         let stats = JSON.parse(localStorage.getItem("retroStats") || "{}");
@@ -464,6 +481,3 @@
     </script>
 </body>
 </html>
-
-
-
