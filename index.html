@@ -203,7 +203,7 @@
             <p class="text-zinc-300 mb-6">залупленная пачамама будет играть, пока сам не остановишь</p>
             <div class="btns">
                 <button class="yes" onclick="enablePochamama()">ВКЛЮЧИТЬ 🔥</button>
-                <button class="no" onclick="skipPochamama()">НЕНАДО ПАЧАМАМЫ</button>
+                <button class="no" onclick="skipPochamama()">НЕ НАДО ПАЧАМАМЫ</button>
             </div>
         </div>
     </div>
@@ -402,6 +402,8 @@
         }
 
         function skipPochamama() {
+            miniPlayer.style.display = 'flex';
+            playPauseBtn.textContent = '▶️';
             playerHint.style.display = 'none';
         }
 
